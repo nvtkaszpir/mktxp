@@ -1,0 +1,15 @@
+apiVersion: v1
+data:
+  _mktxp.conf: |
+    [MKTXP]
+        bandwidth = False                # Turns metrics bandwidth metrics collection on / off    
+        bandwidth_test_interval = 420   # Interval for colllecting bandwidth metrics
+        delay_inc_div = 5
+        initial_delay_on_failure = 120
+        max_delay_on_failure = 900
+        port = 49090
+        socket_timeout = 2
+
+kind: ConfigMap
+metadata:
+  name: mktxp

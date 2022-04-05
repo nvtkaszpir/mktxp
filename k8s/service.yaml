@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: mktxp
+  name: mktxp
+spec:
+  ports:
+  - name: http
+    port: 49091
+    protocol: TCP
+    targetPort: 49090
+  selector:
+    app.kubernetes.io/name: mktxp
+  type: ClusterIP

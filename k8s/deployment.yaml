@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mktxp
+  labels:
+    app.kubernetes.io/name: mktxp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mktxp
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mktxp
+    spec:
+      containers:
+      - image: quay.io/kaszpir/mktxp:dev
+        imagePullPolicy: Always
+        name: mktxp
+        ports:
+        - name: http
+          containerPort: 49090
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 49090
+          timeoutSeconds: 10
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 49090
+          timeoutSeconds: 10
+          periodSeconds: 15
+        startupProbe:
+          httpGet:
+            path: /
+            port: 49090
+          timeoutSeconds: 10
+          periodSeconds: 15
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            memory: 128Mi
+        volumeMounts:
+        - name: devices
+          mountPath: /home/mktxp/mktxp/mktxp.conf
+          subPath: mktxp.conf
+          readOnly: true
+        - name: mktxp
+          mountPath: /home/mktxp/mktxp/_mktxp.conf
+          subPath: _mktxp.conf
+          readOnly: true
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+      volumes:
+        - name: devices
+          secret:
+            defaultMode: 420
+            secretName: mktxp
+        - name: mktxp
+          configMap:
+            defaultMode: 420
+            name: mktxp
+      serviceAccountName: ""
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 10
+      enableServiceLinks: false
